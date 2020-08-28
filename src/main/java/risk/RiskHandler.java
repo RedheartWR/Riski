@@ -80,14 +80,8 @@ public class RiskHandler implements HttpHandler {
             os.write(response.getBytes());
             os.close();
         }
-        catch (UnsupportedOperationException ex) {
+        catch (Exception ex) {
             t.sendResponseHeaders(500, 0);
-        }
-        catch (NoSuchMethodException ex) {
-            t.sendResponseHeaders(400, 0);
-        }
-        catch (ParseException ex) {
-            t.sendResponseHeaders(400, 0);
         }
 
     }

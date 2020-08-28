@@ -1,6 +1,9 @@
 package risk;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
+import java.util.LinkedList;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,4 +23,48 @@ public class Risk {
     Double timeLoss;
     Integer groupId;
     String status;
+
+    public static LinkedList<Risk> fromResultSet(ResultSet result){
+        LinkedList<Risk> risks = new LinkedList<>();
+        try {
+            while (result.next()) {
+                Integer id = result.getInt("id");
+                String name = result.getString("name");
+                String description = result.getString("description");
+                String assigneeEmail = result.getString("assigneeEmail");
+                String creatorEmail = result.getString("creatorEmail");
+                Date creationDate = result.getDate("creationDate");
+                Date lastUpdateDate = result.getDate("lastUpdateDate");
+                Double possibility = result.getDouble("possibility");
+                Double moneyLoss = result.getDouble("moneyLoss");
+                Double timeLoss = result.getDouble("timeLoss");
+                Integer groupId = result.getInt("groupId");
+                String status = result.getString("status");
+                Risk risk = new Risk(id, name, description, assigneeEmail, creatorEmail, creationDate,
+                        lastUpdateDate, possibility, moneyLoss, timeLoss, groupId, status);
+                risks.addLast(risk);
+            }
+        } catch (SQLException ex) {}
+        return risks;
+    }
+
+    public Risk(ResultSet result) {
+        try {
+            result.next();
+            Integer id = result.getInt("id");
+            String name = result.getString("name");
+            String description = result.getString("description");
+            String assigneeEmail = result.getString("assigneeEmail");
+            String creatorEmail = result.getString("creatorEmail");
+            Date creationDate = result.getDate("creationDate");
+            Date lastUpdateDate = result.getDate("lastUpdateDate");
+            Double possibility = result.getDouble("possibility");
+            Double moneyLoss = result.getDouble("moneyLoss");
+            Double timeLoss = result.getDouble("timeLoss");
+            Integer groupId = result.getInt("groupId");
+            String status = result.getString("status");
+            Risk risk = new Risk(id, name, description, assigneeEmail, creatorEmail, creationDate,
+                    lastUpdateDate, possibility, moneyLoss, timeLoss, groupId, status);
+        } catch (SQLException ex) { }
+    }
 }
