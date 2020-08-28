@@ -4,22 +4,20 @@ package risk;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import tools.HttpMethods;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 public class RiskHandler implements HttpHandler {
 
-    public static final String RISKSBYGROUP = "/risks/bygroup";
     public static final String RISKSBYUSER = "/risks/byuser";
-    public static final String RISKSBYID = "/risk";
-    public static final String RISKCREATE = "/risk/create";
-    public static final String RISKDELETE = "/risk/delete";
+    public static final String RISKS = "/risks";
+    public static final String RISK = "/risk";
 
 
     public void handle(HttpExchange t) throws IOException {
@@ -39,42 +37,48 @@ public class RiskHandler implements HttpHandler {
         String status;
         try {
             switch (t.getRequestURI().toString()) {
-                case RISKSBYGROUP:
-                    groupId = Integer.parseInt(tmp.getFirst("GroupId"));
-                    response = RiskQueries.getrisksByGroup(groupId);
-                    break;
-                case RISKSBYID:
-                    id = Integer.parseInt(tmp.getFirst("Id"));
-                    response = RiskQueries.getriskById(id);
-                    break;
                 case RISKSBYUSER:
                     assigneeEmail = tmp.getFirst("X-Email");
-                    response = RiskQueries.getriskByUser(assigneeEmail);
+                    response = RiskQueries.getRiskByUser(assigneeEmail);
                     break;
-                case RISKCREATE:
-                    id = Integer.parseInt(tmp.getFirst("Id"));
-                    name = tmp.getFirst("Name");
-                    description = tmp.getFirst("Description");
-                    assigneeEmail = tmp.getFirst("assigneeEmail");
-                    creatorEmail = tmp.getFirst("creatorEmail");
-                    DateFormat format = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
-                    creationDate = format.parse(tmp.getFirst("CreationDate"));
-                    lastUpdateDate = format.parse(tmp.getFirst("LastUpdateDate"));
-                    possibility = Double.parseDouble(tmp.getFirst("Possibility"));
-                    moneyLoss = Double.parseDouble(tmp.getFirst("MoneyLoss"));
-                    timeLoss = Double.parseDouble(tmp.getFirst("timeLoss"));
-                    groupId = Integer.parseInt(tmp.getFirst("GroupId"));
-                    status = tmp.getFirst("Status");
-                    response = RiskQueries.createRisk(id, name, description, assigneeEmail, creatorEmail,
-                            creationDate, lastUpdateDate, possibility, moneyLoss, timeLoss, groupId, status);
+                case RISKS:
+                    response = RiskQueries.getRisks();
                     break;
-                case RISKDELETE:
-                    id = Integer.parseInt(tmp.getFirst("Id"));
-                    response = RiskQueries.deleteRisk(id);
-                    break;
+                case RISK:
+                    String method = t.getRequestMethod();
+                    switch (method) {
+                        case HttpMethods.GET:
+                            id = Integer.parseInt(tmp.getFirst("Id"));
+                            response = RiskQueries.getRiskById(id);
+                            break;
+                        case HttpMethods.POST:
+                            break;
+                        case HttpMethods.PUT:
+                            id = Integer.parseInt(tmp.getFirst("Id"));
+                            name = tmp.getFirst("Name");
+                            description = tmp.getFirst("Description");
+                            assigneeEmail = tmp.getFirst("AssigneeEmail");
+                            creatorEmail = tmp.getFirst("CreatorEmail");
+                            DateFormat format = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
+                            creationDate = format.parse(tmp.getFirst("CreationDate"));
+                            lastUpdateDate = format.parse(tmp.getFirst("LastUpdateDate"));
+                            possibility = Double.parseDouble(tmp.getFirst("Possibility"));
+                            moneyLoss = Double.parseDouble(tmp.getFirst("MoneyLoss"));
+                            timeLoss = Double.parseDouble(tmp.getFirst("timeLoss"));
+                            status = tmp.getFirst("Status");
+                            response = RiskQueries.createRisk(id, name, description, assigneeEmail, creatorEmail,
+                                    creationDate, lastUpdateDate, possibility, moneyLoss, timeLoss, status);
+                            break;
+                        case HttpMethods.DELETE:
+                            id = Integer.parseInt(tmp.getFirst("Id"));
+                            response = RiskQueries.deleteRisk(id);
+                            break;
+                    }
                 default:
                     throw new NoSuchMethodException();
             }
+            if (response.startsWith("ERROR"))
+                throw new Exception(response);
             t.sendResponseHeaders(200, response.length());
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());

@@ -1,5 +1,6 @@
 package risk;
 
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
@@ -10,7 +11,7 @@ import lombok.AllArgsConstructor;
 
 
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
-public class Risk {
+public class Risk implements Serializable {
     Integer id;
     String name;
     String description;
@@ -21,7 +22,6 @@ public class Risk {
     Double possibility;
     Double moneyLoss;
     Double timeLoss;
-    Integer groupId;
     String status;
 
     public static LinkedList<Risk> fromResultSet(ResultSet result){
@@ -41,7 +41,7 @@ public class Risk {
                 Integer groupId = result.getInt("groupId");
                 String status = result.getString("status");
                 Risk risk = new Risk(id, name, description, assigneeEmail, creatorEmail, creationDate,
-                        lastUpdateDate, possibility, moneyLoss, timeLoss, groupId, status);
+                        lastUpdateDate, possibility, moneyLoss, timeLoss, status);
                 risks.addLast(risk);
             }
         } catch (SQLException ex) {}
@@ -61,10 +61,9 @@ public class Risk {
             Double possibility = result.getDouble("possibility");
             Double moneyLoss = result.getDouble("moneyLoss");
             Double timeLoss = result.getDouble("timeLoss");
-            Integer groupId = result.getInt("groupId");
             String status = result.getString("status");
             Risk risk = new Risk(id, name, description, assigneeEmail, creatorEmail, creationDate,
-                    lastUpdateDate, possibility, moneyLoss, timeLoss, groupId, status);
+                    lastUpdateDate, possibility, moneyLoss, timeLoss, status);
         } catch (SQLException ex) { }
     }
 }

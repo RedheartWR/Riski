@@ -15,22 +15,12 @@ public class UserHandler implements HttpHandler {
     //СИСТЕМА ТОКЕНОВ
     public static final String AUTHORIZATION = "/authorization";
 
-
-/*
-    https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
-    CODE:
-    200 OK
-    400 Bad request
-    401 Unauthorized
-    404 Not found
-    500 Server error
-*/
-
     public void handle(HttpExchange t) throws IOException {
         Headers tmp = t.getRequestHeaders();
         String response = null;
         String userEmail;
         String userPassword;
+        String newPassword;
         String userName;
         String isAHead;
         try {
@@ -43,6 +33,10 @@ public class UserHandler implements HttpHandler {
                         response = UserQueries.getUser(userEmail);
                         break;
                     case HttpMethods.POST:
+                        userEmail = tmp.getFirst("X-Email");
+                        userPassword = tmp.getFirst("Password");
+                        newPassword = tmp.getFirst("NewPassword");
+                        response = UserQueries.changePassword(userEmail, userPassword, newPassword);
                         break;
                     case HttpMethods.PUT:
                         userEmail = tmp.getFirst("X-Email");
@@ -68,6 +62,8 @@ public class UserHandler implements HttpHandler {
             default:
                 throw new NoSuchMethodException();
         }
+            if (response.startsWith("ERROR"))
+                throw new Exception(response);
             t.sendResponseHeaders(200, response.length());
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());

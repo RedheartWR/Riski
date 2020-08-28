@@ -10,52 +10,51 @@ import java.util.LinkedList;
 
 public class RiskQueries {
 
-    public static String getrisksByGroup(Integer groupId) {
-        try {
-            ResultSet result = Query.executeQuery("select * from risks where groupId = \'%d\'", groupId);
-            LinkedList<Risk> risks = Risk.fromResultSet(result);
-            result.close();
-            return ConverterJSON.toJSON(risks);
-        } catch (Exception e) {
-            throw new Exception(String.format("Exception %s; %s", HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage()));
-        }
-    }
-
-    public static String getriskById(Integer id) {
+    public static String getRiskById(Integer id) {
         try {
             ResultSet result = Query.executeQuery("select * from risks where id = \'%d\'", id);
             Risk risk = new Risk(result);
             result.close();
             return ConverterJSON.toJSON(risk);
         }  catch (Exception e) {
-            throw new Exception(String.format("Exception %s; %s", HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage()));
+            return "Error: " + e.getMessage();
         }
     }
 
-    public static String getriskByUser(String userEmail) {
+    public static String getRisks() {
+        try {
+            ResultSet result = Query.executeQuery("select * from risks");
+            LinkedList<Risk> risks = Risk.fromResultSet(result);
+            result.close();
+            return ConverterJSON.toJSON(risks);
+        }  catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    public static String getRiskByUser(String userEmail) {
         try {
             ResultSet result = Query.executeQuery("select * from risks where assigneeEmail = \'%d\'", userEmail);
-            Risk risk = new Risk(result);
+            LinkedList<Risk> risks = Risk.fromResultSet(result);
             result.close();
-            return ConverterJSON.toJSON(risk);
+            return ConverterJSON.toJSON(risks);
         }  catch (Exception e) {
-            throw new Exception(String.format("Exception %s; %s", HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage()));
+            return "Error: " + e.getMessage();
         }
     }
 
     public static String createRisk(Integer id, String name, String description, String assigneeEmail,
                                     String creatorEmail, Date creationDate, Date lastUpdateDate,
-                                    Double possibility, Double moneyLoss, Double timeLoss, Integer groupId,
-                                    String status) {
+                                    Double possibility, Double moneyLoss, Double timeLoss, String status) {
         try {
             Query.executeUpdate("insert into risks (id, name, description, assigneeEmail, creatorEmail," +
                     " creationDate, lastUpdateDate, possibility, moneyLoss, timeLoss, groupId, status) values(\'%d\'," +
-                    " \'%s\', \'%s\', \'%s\' , \'%s\' , \'%td\' , \'%td\' , \'%f\' , \'%f\' , \'%f\' , \'%d\' , \'%s\')",
+                    " \'%s\', \'%s\', \'%s\' , \'%s\' , \'%td\' , \'%td\' , \'%f\' , \'%f\' , \'%f\' , \'%s\')",
                     id, name, description, assigneeEmail, creatorEmail,creationDate,
-                    lastUpdateDate, possibility, moneyLoss, timeLoss, groupId, status);
+                    lastUpdateDate, possibility, moneyLoss, timeLoss, status);
             return "DONE";
         } catch (Exception e) {
-            throw new Exception(String.format("Exception %s; %s", HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage()));
+            return "Error: " + e.getMessage();
         }
     }
 
@@ -64,7 +63,7 @@ public class RiskQueries {
             Query.executeUpdate("delete from risks where id = \'%d\'", id);
             return "DONE";
         } catch (Exception e) {
-            throw new Exception(String.format("Exception %s; %s", HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage()));
+            return "Error: " + e.getMessage();
         }
     }
 }
