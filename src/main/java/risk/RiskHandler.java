@@ -1,11 +1,11 @@
 package risk;
 
-
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import tools.ConverterJSON;
 import tools.HttpMethods;
+import user.UserQueries;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -24,8 +24,13 @@ public class RiskHandler implements HttpHandler {
     public void handle(HttpExchange t) throws IOException {
         Headers headers = t.getRequestHeaders();
         String method = t.getRequestMethod();
+        String token = headers.getFirst("X-Token");
         String response;
+
         try {
+            if (!UserQueries.checkAuthorization(token))
+                throw new Exception("Unauthorized");
+
             switch (t.getRequestURI().toString()) {
                 case RISKSBYUSER:
                     response = risksByUserHandler(headers);
@@ -70,13 +75,11 @@ public class RiskHandler implements HttpHandler {
                 Risk risk = RiskQueries.getRiskById(riskLocal.id);
                 return ConverterJSON.toJSON(risk);
             case HttpMethods.POST:
-                riskLocal = new RiskLocal(headers);
                 Risk oldRisk = RiskQueries.getRiskById(riskLocal.id);
                 riskLocal.findAndApplyDiff(oldRisk);
                 return RiskQueries.updateRisk(riskLocal.id, riskLocal.name, riskLocal.description, riskLocal.assigneeEmail, riskLocal.creatorEmail,
                         riskLocal.creationDate, riskLocal.lastUpdateDate, riskLocal.possibility, riskLocal.moneyLoss, riskLocal.timeLoss, riskLocal.status);
             case HttpMethods.PUT:
-                riskLocal = new RiskLocal(headers);
                 return RiskQueries.createRisk(riskLocal.id, riskLocal.name, riskLocal.description, riskLocal.assigneeEmail, riskLocal.creatorEmail,
                         riskLocal.creationDate, riskLocal.lastUpdateDate, riskLocal.possibility, riskLocal.moneyLoss, riskLocal.timeLoss, riskLocal.status);
             case HttpMethods.DELETE:
