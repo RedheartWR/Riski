@@ -27,20 +27,19 @@ public class Risk implements Serializable {
     public Risk(ResultSet result) {
         try {
             result.next();
-            Integer id = result.getInt("id");
-            String name = result.getString("name");
-            String description = result.getString("description");
-            String assigneeEmail = result.getString("assigneeEmail");
-            String creatorEmail = result.getString("creatorEmail");
-            Date creationDate = result.getDate("creationDate");
-            Date lastUpdateDate = result.getDate("lastUpdateDate");
-            Double possibility = result.getDouble("possibility");
-            Double moneyLoss = result.getDouble("moneyLoss");
-            Double timeLoss = result.getDouble("timeLoss");
-            String status = result.getString("status");
-            Risk risk = new Risk(id, name, description, assigneeEmail, creatorEmail, creationDate,
-                    lastUpdateDate, possibility, moneyLoss, timeLoss, status);
+            this.id = result.getInt("id");
+            this.name = result.getString("name");
+            this.description = result.getString("description");
+            this.assigneeEmail = result.getString("assigneeEmail");
+            this.creatorEmail = result.getString("creatorEmail");
+            this.creationDate = result.getDate("creationDate");
+            this.lastUpdateDate = result.getDate("lastUpdateDate");
+            this.possibility = result.getDouble("possibility");
+            this.moneyLoss = result.getDouble("moneyLoss");
+            this.timeLoss = result.getDouble("timeLoss");
+            this.status = result.getString("status");
         } catch (SQLException ex) {
+            // TODO: handle
         }
     }
 
@@ -48,23 +47,11 @@ public class Risk implements Serializable {
         LinkedList<Risk> risks = new LinkedList<>();
         try {
             while (result.next()) {
-                Integer id = result.getInt("id");
-                String name = result.getString("name");
-                String description = result.getString("description");
-                String assigneeEmail = result.getString("assigneeEmail");
-                String creatorEmail = result.getString("creatorEmail");
-                Date creationDate = result.getDate("creationDate");
-                Date lastUpdateDate = result.getDate("lastUpdateDate");
-                Double possibility = result.getDouble("possibility");
-                Double moneyLoss = result.getDouble("moneyLoss");
-                Double timeLoss = result.getDouble("timeLoss");
-                Integer groupId = result.getInt("groupId");
-                String status = result.getString("status");
-                Risk risk = new Risk(id, name, description, assigneeEmail, creatorEmail, creationDate,
-                        lastUpdateDate, possibility, moneyLoss, timeLoss, status);
+                Risk risk = new Risk(result);
                 risks.addLast(risk);
             }
         } catch (SQLException ex) {
+            // TODO: handle
         }
         return risks;
     }
