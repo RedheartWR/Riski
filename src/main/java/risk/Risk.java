@@ -26,7 +26,6 @@ public class Risk implements Serializable {
 
     public Risk(ResultSet result) {
         try {
-            result.next();
             this.id = result.getInt("id");
             this.name = result.getString("name");
             this.description = result.getString("description");

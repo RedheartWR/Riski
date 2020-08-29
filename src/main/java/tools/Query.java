@@ -30,6 +30,5 @@ public class Query {
         String sql = String.format(formatQuery, args);
         statement.executeUpdate(sql);
         statement.close();
-        return;
     }
 }

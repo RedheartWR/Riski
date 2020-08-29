@@ -16,7 +16,7 @@ public class TagHandler implements HttpHandler {
 
     public void handle(HttpExchange t) throws IOException {
         Headers tmp = t.getRequestHeaders();
-        String response = null;
+        String response = "";
         String tagName;
         String riskId;
         try {
@@ -47,7 +47,7 @@ public class TagHandler implements HttpHandler {
                 default:
                     throw new NoSuchMethodException();
             }
-            if (response.startsWith("ERROR"))
+            if (response.contains("ERROR"))
                 throw new Exception(response);
             t.sendResponseHeaders(200, response.length());
             OutputStream os = t.getResponseBody();

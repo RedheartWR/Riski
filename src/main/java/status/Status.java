@@ -20,7 +20,9 @@ public class Status implements Serializable {
                 Status status = new Status(name);
                 statuses.addLast(status);
             }
-        } catch (SQLException ex) {}
+        } catch (SQLException ex) {
+            // TODO: handle
+        }
         return statuses;
     }
 }

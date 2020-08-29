@@ -11,20 +11,19 @@ import java.util.LinkedList;
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class User implements Serializable {
 
-    private String email;
-    private String name;
-    private String password;
-    private Boolean isAHead;
+    public String email;
+    public String name;
+    public String password;
+    public Boolean isAHead;
 
     public User(ResultSet result) {
         try {
-            result.next();
-            String email = result.getString("email");
-            String name = result.getString("name");
-            String password = result.getString("password");
-            Boolean isAHead = result.getBoolean("isAHead");
-            User user = new User(email, name, password, isAHead);
+            email = result.getString("email");
+            name = result.getString("name");
+            password = result.getString("password");
+            isAHead = result.getBoolean("isAHead");
         } catch (SQLException ex) {
+            // TODO: handle
         }
     }
 
@@ -32,14 +31,11 @@ public class User implements Serializable {
         LinkedList<User> users = new LinkedList<>();
         try {
             while (result.next()) {
-                String email = result.getString("email");
-                String name = result.getString("name");
-                String password = result.getString("password");
-                Boolean isAHead = result.getBoolean("isAHead");
-                User user = new User(email, name, password, isAHead);
+                User user = new User(result);
                 users.addLast(user);
             }
         } catch (SQLException ex) {
+            // TODO: handle
         }
         return users;
     }

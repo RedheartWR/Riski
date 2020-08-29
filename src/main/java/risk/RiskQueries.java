@@ -11,6 +11,7 @@ public class RiskQueries {
 
     public static Risk getRiskById(Integer id) throws Exception {
         ResultSet result = Query.executeQuery("select * from risks where id = '%d'", id);
+//        result.next(); // TODO: check if necessary
         Risk risk = new Risk(result);
         result.close();
         return risk;

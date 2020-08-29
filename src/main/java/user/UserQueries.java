@@ -21,6 +21,7 @@ public class UserQueries {
     public static String getUser(String email) {
         try {
             ResultSet result = Query.executeQuery("select * from users where email ='" + email + "'");
+//            result.next(); // TODO: check if necessary
             User user = new User(result);
             result.close();
             return ConverterJSON.toJSON(user);
