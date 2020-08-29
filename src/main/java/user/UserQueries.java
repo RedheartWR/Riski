@@ -5,6 +5,7 @@ import tools.Query;
 
 import java.sql.ResultSet;
 import java.util.LinkedList;
+import java.util.UUID;
 
 public class UserQueries {
     public static String getUsers() {
@@ -30,6 +31,19 @@ public class UserQueries {
         }
     }
 
+    private static boolean isUserExists(String email, String password) {
+        try {
+            ResultSet result = Query.executeQuery("select * from users where email ='" + email + "' and password = '" + password + "'");
+            // TODO: check query
+            if (!result.next())
+                return false;
+            result.close();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public static String createUser(String email, String name, String password, String isAHead) {
         try {
             Query.executeUpdate("insert into users (email, name, password, is_a_head) values('%s', '%s', '%s', '%s')",
@@ -42,19 +56,29 @@ public class UserQueries {
 
     public static String authorization(String email, String password) {
         try {
-            // TODO: check if user exists in users table: if exists create token (some symbol set, e.g. 123abcZXY) and save it as parameter in users table, send this token back to frontend
+            String token = UUID.randomUUID().toString();
+            // Check if user exists in users table: if exists create token (some symbol set) and save it as parameter in users table, send this token back to frontend
+            if (isUserExists(email, password)) {
+                Query.executeUpdate("update users set token = '%s' where email = '%s'", token, email);
+                return token;
+            } else
+                throw new IllegalArgumentException("Not authorized");
             // Add token to every request send from frontend, except /authorization request. Process it thru method checkAuthorization
-            // Easy way: update this token on new user login (so old session is no longer valid)
-            // Hard way: set deadline for this token, e.g. 10 minutes. But this to much pain in the ass
-            return "123abcZXY";
+            // Easy way: update this token on new user login (so old session is no longer valid) <- ALREADY DONE
+            // Hard way: set deadline for this token, e.g. 10 minutes. But this too much pain in the ass
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
     }
 
-    public static Boolean isTokenValid(String token) {
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public static boolean isTokenValid(String token) {
         try {
-            // TODO: check if token exists in users table; Exists -> true, else -> false
+            ResultSet result = Query.executeQuery("select * from users where token ='" + token + "'");
+            // TODO: check query
+            if (!result.next())
+                return false;
+            result.close();
             return true;
         } catch (Exception e) {
             return false;
