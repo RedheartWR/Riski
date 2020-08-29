@@ -22,26 +22,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7e8f4ba1-087f-4b3c-9020-301e595b6b98" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_oracle_ojdbc8_19_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Riski.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Riski.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/risk/Risk.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/risk/Risk.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/risk/RiskHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/risk/RiskHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/risk/RiskQueries.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/risk/RiskQueries.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/status/Status.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/status/Status.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/status/StatusHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/status/StatusHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tags/Tag.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tags/Tag.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tags/TagHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tags/TagHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tags/TagQueries.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tags/TagQueries.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tools/Query.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tools/Query.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/user/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/user/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/user/UserHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/user/UserHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/user/UserQueries.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/user/UserQueries.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Risk/Risk.class" beforeDir="false" />
-    </list>
+    <list default="true" id="7e8f4ba1-087f-4b3c-9020-301e595b6b98" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -53,12 +34,6 @@
         <option value="Class" />
       </list>
     </option>
-  </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>release</find>
-      <find>USERCREATE</find>
-    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />

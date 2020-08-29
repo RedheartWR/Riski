@@ -9,6 +9,7 @@ import tools.HttpMethods;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -19,66 +20,28 @@ public class RiskHandler implements HttpHandler {
     public static final String RISKS = "/risks";
     public static final String RISK = "/risk";
 
-
     public void handle(HttpExchange t) throws IOException {
-        Headers tmp = t.getRequestHeaders();
+        Headers headers = t.getRequestHeaders();
+        String method = t.getRequestMethod();
         String response;
-        Integer id;
-        String name;
-        String description;
-        String assigneeEmail;
-        String creatorEmail;
-        Date creationDate;
-        Date lastUpdateDate;
-        Double possibility;
-        Double moneyLoss;
-        Double timeLoss;
-        Integer groupId;
-        String status;
         try {
             switch (t.getRequestURI().toString()) {
                 case RISKSBYUSER:
-                    assigneeEmail = tmp.getFirst("X-Email");
-                    response = RiskQueries.getRiskByUser(assigneeEmail);
+                    response = risksByUserHandler(headers);
                     break;
                 case RISKS:
-                    response = RiskQueries.getRisks();
+                    response = risksHandler();
                     break;
                 case RISK:
-                    String method = t.getRequestMethod();
-                    switch (method) {
-                        case HttpMethods.GET:
-                            id = Integer.parseInt(tmp.getFirst("Id"));
-                            response = RiskQueries.getRiskById(id);
-                            break;
-                        case HttpMethods.POST:
-                            break;
-                        case HttpMethods.PUT:
-                            id = Integer.parseInt(tmp.getFirst("Id"));
-                            name = tmp.getFirst("Name");
-                            description = tmp.getFirst("Description");
-                            assigneeEmail = tmp.getFirst("AssigneeEmail");
-                            creatorEmail = tmp.getFirst("CreatorEmail");
-                            DateFormat format = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
-                            creationDate = format.parse(tmp.getFirst("CreationDate"));
-                            lastUpdateDate = format.parse(tmp.getFirst("LastUpdateDate"));
-                            possibility = Double.parseDouble(tmp.getFirst("Possibility"));
-                            moneyLoss = Double.parseDouble(tmp.getFirst("MoneyLoss"));
-                            timeLoss = Double.parseDouble(tmp.getFirst("timeLoss"));
-                            status = tmp.getFirst("Status");
-                            response = RiskQueries.createRisk(id, name, description, assigneeEmail, creatorEmail,
-                                    creationDate, lastUpdateDate, possibility, moneyLoss, timeLoss, status);
-                            break;
-                        case HttpMethods.DELETE:
-                            id = Integer.parseInt(tmp.getFirst("Id"));
-                            response = RiskQueries.deleteRisk(id);
-                            break;
-                    }
+                    response = riskHandler(method, headers);
+                    break;
                 default:
                     throw new NoSuchMethodException();
             }
-            if (response.startsWith("ERROR"))
+
+            if (response.contains("ERROR"))
                 throw new Exception(response);
+
             t.sendResponseHeaders(200, response.length());
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
@@ -89,5 +52,54 @@ public class RiskHandler implements HttpHandler {
 
     }
 
+    private String risksHandler() {
+        return RiskQueries.getRisks();
+    }
+
+    private String risksByUserHandler(Headers headers) {
+        String assigneeEmail = headers.getFirst("X-Email");
+        return RiskQueries.getRiskByUser(assigneeEmail);
+    }
+
+    private String riskHandler(String method, Headers headers) throws ParseException {
+        double timeLoss;
+        String status;
+        String name;
+        Date lastUpdateDate;
+        Date creationDate;
+        int id;
+        double moneyLoss;
+        String description;
+        String creatorEmail;
+        double possibility;
+        String assigneeEmail;
+
+        switch (method) {
+            case HttpMethods.GET:
+                id = Integer.parseInt(headers.getFirst("Id"));
+                return RiskQueries.getRiskById(id);
+            case HttpMethods.POST:
+                return "";
+            case HttpMethods.PUT:
+                id = Integer.parseInt(headers.getFirst("Id"));
+                name = headers.getFirst("Name");
+                description = headers.getFirst("Description");
+                assigneeEmail = headers.getFirst("AssigneeEmail");
+                creatorEmail = headers.getFirst("CreatorEmail");
+                DateFormat format = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
+                creationDate = format.parse(headers.getFirst("CreationDate"));
+                lastUpdateDate = format.parse(headers.getFirst("LastUpdateDate"));
+                possibility = Double.parseDouble(headers.getFirst("Possibility"));
+                moneyLoss = Double.parseDouble(headers.getFirst("MoneyLoss"));
+                timeLoss = Double.parseDouble(headers.getFirst("timeLoss"));
+                status = headers.getFirst("Status");
+                return RiskQueries.createRisk(id, name, description, assigneeEmail, creatorEmail,
+                        creationDate, lastUpdateDate, possibility, moneyLoss, timeLoss, status);
+            case HttpMethods.DELETE:
+                id = Integer.parseInt(headers.getFirst("Id"));
+                return RiskQueries.deleteRisk(id);
+        }
+        return "";
+    }
 }
 
