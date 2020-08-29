@@ -42,10 +42,22 @@ public class UserQueries {
 
     public static String authorization(String email, String password) {
         try {
-            //TODO
-            return "";
+            // TODO: check if user exists in users table: if exists create token (some symbol set, e.g. 123abcZXY) and save it as parameter in users table, send this token back to frontend
+            // Add token to every request send from frontend, except /authorization request. Process it thru method checkAuthorization
+            // Easy way: update this token on new user login (so old session is no longer valid)
+            // Hard way: set deadline for this token, e.g. 10 minutes. But this to much pain in the ass
+            return "123abcZXY";
         } catch (Exception e) {
             return "Error: " + e.getMessage();
+        }
+    }
+
+    public static Boolean checkAuthorization(String token) {
+        try {
+            // TODO: check if token exists in users table; Exists -> true, else -> false
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 

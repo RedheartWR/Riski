@@ -10,43 +10,39 @@ import java.io.OutputStream;
 
 public class UserHandler implements HttpHandler {
 
-    public static final String USER = "/user"; // -> GET "/user"
+    public static final String USER = "/user";
     public static final String USERS = "/users";
-    //СИСТЕМА ТОКЕНОВ
     public static final String AUTHORIZATION = "/authorization";
 
     public void handle(HttpExchange t) throws IOException {
-        Headers tmp = t.getRequestHeaders();
-        String response = null;
-        String userEmail;
-        String userPassword;
-        String newPassword;
-        String userName;
-        String isAHead;
+        Headers headers = t.getRequestHeaders();
+        String response = "";
+        String userEmail = headers.getFirst("X-Email");
+        String userPassword = headers.getFirst("Password");
+        String newPassword = headers.getFirst("NewPassword");
+        String userName = headers.getFirst("Name");
+        String isAHead = headers.getFirst("IsAHead").equals("Y") ? "TRUE" : "FALSE";
+
+        String token = headers.getFirst("X-Token");
+        String method = t.getRequestMethod();
+
         try {
+            if (!t.getRequestURI().toString().equals(AUTHORIZATION) && !UserQueries.checkAuthorization(token))
+                throw new Exception("Unauthorized");
+
             switch (t.getRequestURI().toString()) {
                 case USER:
-                    String method = t.getRequestMethod();
                     switch (method) {
                         case HttpMethods.GET:
-                            userEmail = tmp.getFirst("X-Email");
                             response = UserQueries.getUser(userEmail);
                             break;
                         case HttpMethods.POST:
-                            userEmail = tmp.getFirst("X-Email");
-                            userPassword = tmp.getFirst("Password");
-                            newPassword = tmp.getFirst("NewPassword");
                             response = UserQueries.changePassword(userEmail, userPassword, newPassword);
                             break;
                         case HttpMethods.PUT:
-                            userEmail = tmp.getFirst("X-Email");
-                            userName = tmp.getFirst("Name");
-                            userPassword = tmp.getFirst("Password");
-                            isAHead = tmp.getFirst("IsAHead").equals("Y") ? "TRUE" : "FALSE";
                             response = UserQueries.createUser(userEmail, userName, userPassword, isAHead);
                             break;
                         case HttpMethods.DELETE:
-                            userEmail = tmp.getFirst("X-Email");
                             response = UserQueries.deleteUser(userEmail);
                             break;
                     }
@@ -55,15 +51,15 @@ public class UserHandler implements HttpHandler {
                     response = UserQueries.getUsers();
                     break;
                 case AUTHORIZATION:
-                    userEmail = tmp.getFirst("X-Email");
-                    userPassword = tmp.getFirst("Password");
                     response = UserQueries.authorization(userEmail, userPassword);
                     break;
                 default:
                     throw new NoSuchMethodException();
             }
-            if (response.startsWith("ERROR"))
+
+            if (response.contains("ERROR"))
                 throw new Exception(response);
+
             t.sendResponseHeaders(200, response.length());
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
@@ -71,7 +67,5 @@ public class UserHandler implements HttpHandler {
         } catch (Exception ex) {
             t.sendResponseHeaders(500, 0);
         }
-
     }
-
 }
