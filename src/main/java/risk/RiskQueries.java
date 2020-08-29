@@ -9,15 +9,11 @@ import java.util.LinkedList;
 
 public class RiskQueries {
 
-    public static String getRiskById(Integer id) {
-        try {
-            ResultSet result = Query.executeQuery("select * from risks where id = '%d'", id);
-            Risk risk = new Risk(result);
-            result.close();
-            return ConverterJSON.toJSON(risk);
-        } catch (Exception e) {
-            return "Error: " + e.getMessage();
-        }
+    public static Risk getRiskById(Integer id) throws Exception {
+        ResultSet result = Query.executeQuery("select * from risks where id = '%d'", id);
+        Risk risk = new Risk(result);
+        result.close();
+        return risk;
     }
 
     public static String getRisks() {
@@ -37,6 +33,20 @@ public class RiskQueries {
             LinkedList<Risk> risks = Risk.fromResultSet(result);
             result.close();
             return ConverterJSON.toJSON(risks);
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    public static String updateRisk(Integer id, String name, String description, String assigneeEmail,
+                                    String creatorEmail, Date creationDate, Date lastUpdateDate,
+                                    Double possibility, Double moneyLoss, Double timeLoss, String status) {
+        try {
+            Query.executeUpdate("update risks set name = '%s', description = '%s', assigneeEmail = '%s', creatorEmail = '%s'," +
+                            " creationDate = '%td', lastUpdateDate = '%td', possibility = '%f', moneyLoss = '%f', timeLoss = '%f', status = '%s' where id = '%d'",
+                    id, name, description, assigneeEmail, creatorEmail, creationDate,
+                    lastUpdateDate, possibility, moneyLoss, timeLoss, status);
+            return "DONE";
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }

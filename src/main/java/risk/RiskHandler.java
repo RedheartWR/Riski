@@ -4,6 +4,7 @@ package risk;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import tools.ConverterJSON;
 import tools.HttpMethods;
 
 import java.io.IOException;
@@ -61,38 +62,44 @@ public class RiskHandler implements HttpHandler {
         return RiskQueries.getRiskByUser(assigneeEmail);
     }
 
-    private String riskHandler(String method, Headers headers) throws ParseException {
-        RiskLocal risk = new RiskLocal(headers);
+    private String riskHandler(String method, Headers headers) throws Exception {
+        RiskLocal riskLocal = new RiskLocal(headers);
 
         switch (method) {
             case HttpMethods.GET:
-                return RiskQueries.getRiskById(risk.id);
+                Risk risk = RiskQueries.getRiskById(riskLocal.id);
+                return ConverterJSON.toJSON(risk);
             case HttpMethods.POST:
-                return "";
+                riskLocal = new RiskLocal(headers);
+                Risk oldRisk = RiskQueries.getRiskById(riskLocal.id);
+                riskLocal.findAndApplyDiff(oldRisk);
+                return RiskQueries.updateRisk(riskLocal.id, riskLocal.name, riskLocal.description, riskLocal.assigneeEmail, riskLocal.creatorEmail,
+                        riskLocal.creationDate, riskLocal.lastUpdateDate, riskLocal.possibility, riskLocal.moneyLoss, riskLocal.timeLoss, riskLocal.status);
             case HttpMethods.PUT:
-                risk = new RiskLocal(headers);
-                return RiskQueries.createRisk(risk.id, risk.name, risk.description, risk.assigneeEmail, risk.creatorEmail,
-                        risk.creationDate, risk.lastUpdateDate, risk.possibility, risk.moneyLoss, risk.timeLoss, risk.status);
+                riskLocal = new RiskLocal(headers);
+                return RiskQueries.createRisk(riskLocal.id, riskLocal.name, riskLocal.description, riskLocal.assigneeEmail, riskLocal.creatorEmail,
+                        riskLocal.creationDate, riskLocal.lastUpdateDate, riskLocal.possibility, riskLocal.moneyLoss, riskLocal.timeLoss, riskLocal.status);
             case HttpMethods.DELETE:
-                risk.id = Integer.parseInt(headers.getFirst("Id"));
-                return RiskQueries.deleteRisk(risk.id);
+                riskLocal.id = Integer.parseInt(headers.getFirst("Id"));
+                return RiskQueries.deleteRisk(riskLocal.id);
         }
         return "";
     }
 
     private class RiskLocal {
         DateFormat format = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
+        private static final double NotExisting = Double.NEGATIVE_INFINITY;
 
+        int id;
         double timeLoss;
-        String status;
-        String name;
+        double possibility;
+        double moneyLoss;
         Date lastUpdateDate;
         Date creationDate;
-        int id;
-        double moneyLoss;
+        String status;
+        String name;
         String description;
         String creatorEmail;
-        double possibility;
         String assigneeEmail;
 
         RiskLocal(Headers headers) throws ParseException {
@@ -101,12 +108,37 @@ public class RiskHandler implements HttpHandler {
             this.description = headers.getFirst("Description");
             this.assigneeEmail = headers.getFirst("AssigneeEmail");
             this.creatorEmail = headers.getFirst("CreatorEmail");
-            this.creationDate = format.parse(headers.getFirst("CreationDate"));
-            this.lastUpdateDate = format.parse(headers.getFirst("LastUpdateDate"));
-            this.possibility = Double.parseDouble(headers.getFirst("Possibility"));
-            this.moneyLoss = Double.parseDouble(headers.getFirst("MoneyLoss"));
-            this.timeLoss = Double.parseDouble(headers.getFirst("timeLoss"));
+            this.creationDate = headers.getFirst("CreationDate").isEmpty() ? null : format.parse(headers.getFirst("CreationDate"));
+            this.lastUpdateDate = headers.getFirst("LastUpdateDate").isEmpty() ? null : format.parse(headers.getFirst("LastUpdateDate"));
+            this.possibility = headers.getFirst("Possibility").isEmpty() ? NotExisting : Double.parseDouble(headers.getFirst("Possibility"));
+            this.moneyLoss = headers.getFirst("MoneyLoss").isEmpty() ? NotExisting : Double.parseDouble(headers.getFirst("MoneyLoss"));
+            this.timeLoss = headers.getFirst("timeLoss").isEmpty() ? NotExisting : Double.parseDouble(headers.getFirst("timeLoss")); //TODO: timeLoss in small case
             this.status = headers.getFirst("Status");
+        }
+
+        public void findAndApplyDiff(Risk oldRisk) {
+            if (id == -1)
+                id = oldRisk.id;
+            if (timeLoss == NotExisting)
+                timeLoss = oldRisk.timeLoss;
+            if (possibility == NotExisting)
+                possibility = oldRisk.possibility;
+            if (moneyLoss == NotExisting)
+                moneyLoss = oldRisk.moneyLoss;
+            if (lastUpdateDate == null)
+                lastUpdateDate = oldRisk.lastUpdateDate;
+            if (creationDate == null)
+                creationDate = oldRisk.creationDate;
+            if (status == null || status.isEmpty())
+                status = oldRisk.status;
+            if (name == null || name.isEmpty())
+                name = oldRisk.name;
+            if (description == null || description.isEmpty())
+                description = oldRisk.description;
+            if (creatorEmail == null || creatorEmail.isEmpty())
+                creatorEmail = oldRisk.creatorEmail;
+            if (assigneeEmail == null || assigneeEmail.isEmpty())
+                assigneeEmail = oldRisk.assigneeEmail;
         }
     }
 }
