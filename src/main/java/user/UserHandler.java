@@ -20,7 +20,7 @@ public class UserHandler implements HttpHandler {
         String userEmail = headers.getFirst("X-Email");
         String userPassword = headers.getFirst("Password");
         String newPassword = headers.getFirst("NewPassword");
-        String userName = headers.getFirst("Name");
+        String userName = headers.getFirst("X-Name");
         String isAHead = headers.getFirst("IsAHead").equals("Y") ? "TRUE" : "FALSE";
 
         String token = headers.getFirst("X-Token");

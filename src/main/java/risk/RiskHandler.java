@@ -83,7 +83,7 @@ public class RiskHandler implements HttpHandler {
                 return RiskQueries.createRisk(riskLocal.id, riskLocal.name, riskLocal.description, riskLocal.assigneeEmail, riskLocal.creatorEmail,
                         riskLocal.creationDate, riskLocal.lastUpdateDate, riskLocal.possibility, riskLocal.moneyLoss, riskLocal.timeLoss, riskLocal.status);
             case HttpMethods.DELETE:
-                riskLocal.id = Integer.parseInt(headers.getFirst("Id"));
+                riskLocal.id = Integer.parseInt(headers.getFirst("X-Id"));
                 return RiskQueries.deleteRisk(riskLocal.id);
         }
         return "";
@@ -106,17 +106,17 @@ public class RiskHandler implements HttpHandler {
         String assigneeEmail;
 
         RiskLocal(Headers headers) throws ParseException {
-            this.id = Integer.parseInt(headers.getFirst("Id"));
-            this.name = headers.getFirst("Name");
-            this.description = headers.getFirst("Description");
-            this.assigneeEmail = headers.getFirst("AssigneeEmail");
-            this.creatorEmail = headers.getFirst("CreatorEmail");
-            this.creationDate = headers.getFirst("CreationDate").isEmpty() ? null : format.parse(headers.getFirst("CreationDate"));
-            this.lastUpdateDate = headers.getFirst("LastUpdateDate").isEmpty() ? null : format.parse(headers.getFirst("LastUpdateDate"));
-            this.possibility = headers.getFirst("Possibility").isEmpty() ? NotExisting : Double.parseDouble(headers.getFirst("Possibility"));
-            this.moneyLoss = headers.getFirst("MoneyLoss").isEmpty() ? NotExisting : Double.parseDouble(headers.getFirst("MoneyLoss"));
-            this.timeLoss = headers.getFirst("timeLoss").isEmpty() ? NotExisting : Double.parseDouble(headers.getFirst("timeLoss")); //TODO: timeLoss in small case
-            this.status = headers.getFirst("Status");
+            this.id = Integer.parseInt(headers.getFirst("X-Id"));
+            this.name = headers.getFirst("X-Name");
+            this.description = headers.getFirst("X-Description");
+            this.assigneeEmail = headers.getFirst("X-AssigneeEmail");
+            this.creatorEmail = headers.getFirst("X-CreatorEmail");
+            this.creationDate = headers.getFirst("X-CreationDate").isEmpty() ? null : format.parse(headers.getFirst("X-CreationDate"));
+            this.lastUpdateDate = headers.getFirst("X-LastUpdateDate").isEmpty() ? null : format.parse(headers.getFirst("X-LastUpdateDate"));
+            this.possibility = headers.getFirst("X-Possibility").isEmpty() ? NotExisting : Double.parseDouble(headers.getFirst("X-Possibility"));
+            this.moneyLoss = headers.getFirst("X-MoneyLoss").isEmpty() ? NotExisting : Double.parseDouble(headers.getFirst("X-MoneyLoss"));
+            this.timeLoss = headers.getFirst("X-TimeLoss").isEmpty() ? NotExisting : Double.parseDouble(headers.getFirst("X-TimeLoss")); //TODO: timeLoss in small case
+            this.status = headers.getFirst("X-Status");
         }
 
         public void findAndApplyDiff(Risk oldRisk) {

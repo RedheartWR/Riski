@@ -18,8 +18,8 @@ public class TagHandler implements HttpHandler {
     public void handle(HttpExchange t) throws IOException {
         Headers headers = t.getRequestHeaders();
         String response = "";
-        String tagName = headers.getFirst("TagName");
-        String riskId = headers.getFirst("riskId");
+        String tagName = headers.getFirst("X-TagName");
+        String riskId = headers.getFirst("X-RiskId");
 
         String token = headers.getFirst("X-Token");
         String method = t.getRequestMethod();
