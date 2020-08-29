@@ -45,7 +45,7 @@ public class RiskHandler implements HttpHandler {
                     throw new NoSuchMethodException();
             }
 
-            if (response.contains("ERROR"))
+            if (response.contains("Error"))
                 throw new Exception(response);
 
             t.sendResponseHeaders(200, response.length());
