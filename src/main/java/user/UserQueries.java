@@ -3,7 +3,7 @@ package user;
 import tools.ConverterJSON;
 import tools.Query;
 
-import java.sql.*;
+import java.sql.ResultSet;
 import java.util.LinkedList;
 
 public class UserQueries {
@@ -31,7 +31,7 @@ public class UserQueries {
 
     public static String createUser(String email, String name, String password, String isAHead) {
         try {
-            Query.executeUpdate("insert into users (email, name, password, is_a_head) values(\'%s\', \'%s\', \'%s\', \'%s\')",
+            Query.executeUpdate("insert into users (email, name, password, is_a_head) values('%s', '%s', '%s', '%s')",
                     email, name, password, isAHead);
             return "DONE";
         } catch (Exception e) {
@@ -40,17 +40,17 @@ public class UserQueries {
     }
 
     public static String authorization(String email, String password) {
-            try {
-                //TODO
-                return "";
-            } catch (Exception e) {
-                return "Error: " + e.getMessage();
-            }
+        try {
+            //TODO
+            return "";
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
     }
 
     public static String deleteUser(String email) {
         try {
-            Query.executeUpdate("delete from users where email = \'%s\'", email);
+            Query.executeUpdate("delete from users where email = '%s'", email);
             return "DONE";
         } catch (Exception e) {
             return "Error: " + e.getMessage();
@@ -59,7 +59,7 @@ public class UserQueries {
 
     public static String changePassword(String email, String oldPassword, String newPassword) {
         try {
-            Query.executeUpdate("update users set password = \'%s\' where email = \'%s\' and password = \'%s\'",
+            Query.executeUpdate("update users set password = '%s' where email = '%s' and password = '%s'",
                     newPassword, email, oldPassword);
             return "DONE";
         } catch (Exception e) {

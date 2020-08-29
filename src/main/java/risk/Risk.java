@@ -1,13 +1,13 @@
 package risk;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.LinkedList;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 
 
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
@@ -24,7 +24,27 @@ public class Risk implements Serializable {
     Double timeLoss;
     String status;
 
-    public static LinkedList<Risk> fromResultSet(ResultSet result){
+    public Risk(ResultSet result) {
+        try {
+            result.next();
+            Integer id = result.getInt("id");
+            String name = result.getString("name");
+            String description = result.getString("description");
+            String assigneeEmail = result.getString("assigneeEmail");
+            String creatorEmail = result.getString("creatorEmail");
+            Date creationDate = result.getDate("creationDate");
+            Date lastUpdateDate = result.getDate("lastUpdateDate");
+            Double possibility = result.getDouble("possibility");
+            Double moneyLoss = result.getDouble("moneyLoss");
+            Double timeLoss = result.getDouble("timeLoss");
+            String status = result.getString("status");
+            Risk risk = new Risk(id, name, description, assigneeEmail, creatorEmail, creationDate,
+                    lastUpdateDate, possibility, moneyLoss, timeLoss, status);
+        } catch (SQLException ex) {
+        }
+    }
+
+    public static LinkedList<Risk> fromResultSet(ResultSet result) {
         LinkedList<Risk> risks = new LinkedList<>();
         try {
             while (result.next()) {
@@ -44,26 +64,8 @@ public class Risk implements Serializable {
                         lastUpdateDate, possibility, moneyLoss, timeLoss, status);
                 risks.addLast(risk);
             }
-        } catch (SQLException ex) {}
+        } catch (SQLException ex) {
+        }
         return risks;
-    }
-
-    public Risk(ResultSet result) {
-        try {
-            result.next();
-            Integer id = result.getInt("id");
-            String name = result.getString("name");
-            String description = result.getString("description");
-            String assigneeEmail = result.getString("assigneeEmail");
-            String creatorEmail = result.getString("creatorEmail");
-            Date creationDate = result.getDate("creationDate");
-            Date lastUpdateDate = result.getDate("lastUpdateDate");
-            Double possibility = result.getDouble("possibility");
-            Double moneyLoss = result.getDouble("moneyLoss");
-            Double timeLoss = result.getDouble("timeLoss");
-            String status = result.getString("status");
-            Risk risk = new Risk(id, name, description, assigneeEmail, creatorEmail, creationDate,
-                    lastUpdateDate, possibility, moneyLoss, timeLoss, status);
-        } catch (SQLException ex) { }
     }
 }

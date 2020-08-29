@@ -53,8 +53,7 @@ public class TagHandler implements HttpHandler {
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
             os.close();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             t.sendResponseHeaders(500, 0);
         }
 

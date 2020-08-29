@@ -3,9 +3,9 @@ package tools;
 import java.sql.*;
 
 public class Query {
-    private static Connection connection = createConnection();
+    private static final Connection connection = createConnection();
 
-    private static Connection createConnection()  {
+    private static Connection createConnection() {
         Connection connection = null;
         try {
             Class.forName("org.postgresql.Driver");
