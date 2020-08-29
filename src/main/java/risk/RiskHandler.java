@@ -62,6 +62,27 @@ public class RiskHandler implements HttpHandler {
     }
 
     private String riskHandler(String method, Headers headers) throws ParseException {
+        RiskLocal risk = new RiskLocal(headers);
+
+        switch (method) {
+            case HttpMethods.GET:
+                return RiskQueries.getRiskById(risk.id);
+            case HttpMethods.POST:
+                return "";
+            case HttpMethods.PUT:
+                risk = new RiskLocal(headers);
+                return RiskQueries.createRisk(risk.id, risk.name, risk.description, risk.assigneeEmail, risk.creatorEmail,
+                        risk.creationDate, risk.lastUpdateDate, risk.possibility, risk.moneyLoss, risk.timeLoss, risk.status);
+            case HttpMethods.DELETE:
+                risk.id = Integer.parseInt(headers.getFirst("Id"));
+                return RiskQueries.deleteRisk(risk.id);
+        }
+        return "";
+    }
+
+    private class RiskLocal {
+        DateFormat format = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
+
         double timeLoss;
         String status;
         String name;
@@ -74,32 +95,19 @@ public class RiskHandler implements HttpHandler {
         double possibility;
         String assigneeEmail;
 
-        switch (method) {
-            case HttpMethods.GET:
-                id = Integer.parseInt(headers.getFirst("Id"));
-                return RiskQueries.getRiskById(id);
-            case HttpMethods.POST:
-                return "";
-            case HttpMethods.PUT:
-                id = Integer.parseInt(headers.getFirst("Id"));
-                name = headers.getFirst("Name");
-                description = headers.getFirst("Description");
-                assigneeEmail = headers.getFirst("AssigneeEmail");
-                creatorEmail = headers.getFirst("CreatorEmail");
-                DateFormat format = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
-                creationDate = format.parse(headers.getFirst("CreationDate"));
-                lastUpdateDate = format.parse(headers.getFirst("LastUpdateDate"));
-                possibility = Double.parseDouble(headers.getFirst("Possibility"));
-                moneyLoss = Double.parseDouble(headers.getFirst("MoneyLoss"));
-                timeLoss = Double.parseDouble(headers.getFirst("timeLoss"));
-                status = headers.getFirst("Status");
-                return RiskQueries.createRisk(id, name, description, assigneeEmail, creatorEmail,
-                        creationDate, lastUpdateDate, possibility, moneyLoss, timeLoss, status);
-            case HttpMethods.DELETE:
-                id = Integer.parseInt(headers.getFirst("Id"));
-                return RiskQueries.deleteRisk(id);
+        RiskLocal(Headers headers) throws ParseException {
+            this.id = Integer.parseInt(headers.getFirst("Id"));
+            this.name = headers.getFirst("Name");
+            this.description = headers.getFirst("Description");
+            this.assigneeEmail = headers.getFirst("AssigneeEmail");
+            this.creatorEmail = headers.getFirst("CreatorEmail");
+            this.creationDate = format.parse(headers.getFirst("CreationDate"));
+            this.lastUpdateDate = format.parse(headers.getFirst("LastUpdateDate"));
+            this.possibility = Double.parseDouble(headers.getFirst("Possibility"));
+            this.moneyLoss = Double.parseDouble(headers.getFirst("MoneyLoss"));
+            this.timeLoss = Double.parseDouble(headers.getFirst("timeLoss"));
+            this.status = headers.getFirst("Status");
         }
-        return "";
     }
 }
 
