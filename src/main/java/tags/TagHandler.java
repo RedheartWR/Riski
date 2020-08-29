@@ -25,7 +25,7 @@ public class TagHandler implements HttpHandler {
         String method = t.getRequestMethod();
 
         try {
-            if (!UserQueries.checkAuthorization(token))
+            if (!UserQueries.isTokenValid(token))
                 throw new Exception("Unauthorized");
 
             switch (t.getRequestURI().toString()) {

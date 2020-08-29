@@ -15,7 +15,7 @@ public class StatusHandler implements HttpHandler {
             String response;
 
             String token = t.getRequestHeaders().getFirst("X-Token");
-            if (!UserQueries.checkAuthorization(token))
+            if (!UserQueries.isTokenValid(token))
                 throw new Exception("Unauthorized");
 
             if (t.getRequestURI().toString().equals(STATUSES))

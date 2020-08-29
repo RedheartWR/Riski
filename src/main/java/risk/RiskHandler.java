@@ -28,7 +28,7 @@ public class RiskHandler implements HttpHandler {
         String response;
 
         try {
-            if (!UserQueries.checkAuthorization(token))
+            if (!UserQueries.isTokenValid(token))
                 throw new Exception("Unauthorized");
 
             switch (t.getRequestURI().toString()) {

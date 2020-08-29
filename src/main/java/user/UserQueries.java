@@ -52,7 +52,7 @@ public class UserQueries {
         }
     }
 
-    public static Boolean checkAuthorization(String token) {
+    public static Boolean isTokenValid(String token) {
         try {
             // TODO: check if token exists in users table; Exists -> true, else -> false
             return true;

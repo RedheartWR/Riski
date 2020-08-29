@@ -27,7 +27,7 @@ public class UserHandler implements HttpHandler {
         String method = t.getRequestMethod();
 
         try {
-            if (!t.getRequestURI().toString().equals(AUTHORIZATION) && !UserQueries.checkAuthorization(token))
+            if (!t.getRequestURI().toString().equals(AUTHORIZATION) && !UserQueries.isTokenValid(token))
                 throw new Exception("Unauthorized");
 
             switch (t.getRequestURI().toString()) {
