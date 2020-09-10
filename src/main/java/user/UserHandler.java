@@ -21,11 +21,10 @@ public class UserHandler implements HttpHandler {
         String userPassword = headers.getFirst("Password");
         String newPassword = headers.getFirst("NewPassword");
         String userName = headers.getFirst("X-Name");
-        String isAHead = headers.getFirst("IsAHead").equals("Y") ? "TRUE" : "FALSE";
+        String isAHead = headers.getFirst("IsAHead") != null && headers.getFirst("IsAHead").equals("Y") ? "TRUE" : "FALSE";
 
         String token = headers.getFirst("X-Token");
         String method = t.getRequestMethod();
-
         try {
             if (!t.getRequestURI().toString().equals(AUTHORIZATION) && !UserQueries.isTokenValid(token))
                 throw new Exception("Unauthorized");
@@ -52,6 +51,7 @@ public class UserHandler implements HttpHandler {
                     break;
                 case AUTHORIZATION:
                     response = UserQueries.authorization(userEmail, userPassword);
+                    t.getResponseHeaders().set("Authorization", response);
                     break;
                 default:
                     throw new NoSuchMethodException();
