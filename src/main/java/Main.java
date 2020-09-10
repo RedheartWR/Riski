@@ -14,6 +14,7 @@ public class Main {
         server.createContext(UserHandler.USER, new UserHandler());
         server.createContext(UserHandler.USERS, new UserHandler());
         server.createContext(UserHandler.AUTHORIZATION, new UserHandler());
+        server.createContext(UserHandler.TOKEN, new UserHandler());
 
         server.createContext(RiskHandler.RISK, new RiskHandler());
         server.createContext(RiskHandler.RISKS, new RiskHandler());
