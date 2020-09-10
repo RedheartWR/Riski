@@ -35,7 +35,7 @@ public class UserQueries {
         try {
             ResultSet result= Query.executeQuery("select * from users where email ='" + email + "' and password = '" + password + "'");
             // TODO: check query
-            if (result.next() && result.getRow() != 1)
+            if (!result.next() || result.getRow() != 1)
                 return false;
             result.close();
             return true;

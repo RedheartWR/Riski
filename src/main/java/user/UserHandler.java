@@ -51,7 +51,8 @@ public class UserHandler implements HttpHandler {
                     break;
                 case AUTHORIZATION:
                     response = UserQueries.authorization(userEmail, userPassword);
-                    t.getResponseHeaders().set("Authorization", response);
+//                    if (!response.isEmpty() && !response.contains("Error"))
+                        t.getResponseHeaders().set("Authorization", response);
                     break;
                 default:
                     throw new NoSuchMethodException();
