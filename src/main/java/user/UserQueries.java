@@ -63,9 +63,6 @@ public class UserQueries {
                 return token;
             } else
                 throw new IllegalArgumentException("Not authorized");
-            // Add token to every request send from frontend, except /authorization request. Process it thru method checkAuthorization
-            // Easy way: update this token on new user login (so old session is no longer valid) <- ALREADY DONE
-            // Hard way: set deadline for this token, e.g. 10 minutes. But this too much pain in the ass
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
