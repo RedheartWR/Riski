@@ -13,6 +13,7 @@ public class UserHandler implements HttpHandler {
     public static final String USER = "/user";
     public static final String USERS = "/users";
     public static final String AUTHORIZATION = "/authorization";
+    public static final String TOKEN = "/token";
 
     public void handle(HttpExchange t) throws IOException {
         Headers headers = t.getRequestHeaders();
@@ -21,13 +22,12 @@ public class UserHandler implements HttpHandler {
         String userPassword = headers.getFirst("Password");
         String newPassword = headers.getFirst("NewPassword");
         String userName = headers.getFirst("X-Name");
-        String isAHead = headers.getFirst("IsAHead").equals("Y") ? "TRUE" : "FALSE";
+        String isAHead = headers.getFirst("IsAHead") != null && headers.getFirst("IsAHead").equals("Y") ? "TRUE" : "FALSE";
 
-        String token = headers.getFirst("X-Token");
+        String token = headers.getFirst("Token");
         String method = t.getRequestMethod();
-
         try {
-            if (!t.getRequestURI().toString().equals(AUTHORIZATION) && !UserQueries.isTokenValid(token))
+            if (!t.getRequestURI().toString().equals(AUTHORIZATION) && !t.getRequestURI().toString().equals(TOKEN) && !UserQueries.isTokenValid(token))
                 throw new Exception("Unauthorized");
 
             switch (t.getRequestURI().toString()) {
@@ -52,7 +52,12 @@ public class UserHandler implements HttpHandler {
                     break;
                 case AUTHORIZATION:
                     response = UserQueries.authorization(userEmail, userPassword);
+//                    if (!response.isEmpty() && !response.contains("Error"))
+                    t.getResponseHeaders().set("Authorization", response);
                     break;
+                case TOKEN:
+                    if (!UserQueries.isTokenValid(token))
+                        throw new Exception("Unauthorized");
                 default:
                     throw new NoSuchMethodException();
             }
