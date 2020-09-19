@@ -48,7 +48,7 @@ public class RiskHandler implements HttpHandler {
             if (response.contains("Error"))
                 throw new Exception(response);
 
-            t.sendResponseHeaders(200, response.length());
+            t.sendResponseHeaders(200, response.getBytes().length);
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
             os.close();
@@ -106,17 +106,17 @@ public class RiskHandler implements HttpHandler {
         String assigneeEmail;
 
         RiskLocal(Headers headers) throws ParseException {
-            this.id = Integer.parseInt(headers.getFirst("X-Id"));
-            this.name = headers.getFirst("X-Name");
-            this.description = headers.getFirst("X-Description");
-            this.assigneeEmail = headers.getFirst("X-AssigneeEmail");
-            this.creatorEmail = headers.getFirst("X-CreatorEmail");
-            this.creationDate = headers.getFirst("X-CreationDate").isEmpty() ? null : format.parse(headers.getFirst("X-CreationDate"));
-            this.lastUpdateDate = headers.getFirst("X-LastUpdateDate").isEmpty() ? null : format.parse(headers.getFirst("X-LastUpdateDate"));
-            this.possibility = headers.getFirst("X-Possibility").isEmpty() ? NotExisting : Double.parseDouble(headers.getFirst("X-Possibility"));
-            this.moneyLoss = headers.getFirst("X-MoneyLoss").isEmpty() ? NotExisting : Double.parseDouble(headers.getFirst("X-MoneyLoss"));
-            this.timeLoss = headers.getFirst("X-TimeLoss").isEmpty() ? NotExisting : Double.parseDouble(headers.getFirst("X-TimeLoss")); //TODO: timeLoss in small case
-            this.status = headers.getFirst("X-Status");
+            this.id = !headers.containsKey("X-Id") ? -1 : Integer.parseInt(headers.getFirst("X-Id"));
+            this.name = !headers.containsKey("X-Name") ? null : headers.getFirst("X-Name");
+            this.description = !headers.containsKey("X-Description") ? null : headers.getFirst("X-Description");
+            this.assigneeEmail = !headers.containsKey("X-AssigneeEmail") ? null : headers.getFirst("X-AssigneeEmail");
+            this.creatorEmail = !headers.containsKey("X-CreatorEmail") ? null : headers.getFirst("X-CreatorEmail");
+            this.creationDate = !headers.containsKey("X-CreationDate") ? new Date(1) : format.parse(headers.getFirst("X-CreationDate"));
+            this.lastUpdateDate = !headers.containsKey("X-LastUpdateDate") ? new Date(1) : format.parse(headers.getFirst("X-LastUpdateDate"));
+            this.possibility = !headers.containsKey("X-Possibility") ? NotExisting : Double.parseDouble(headers.getFirst("X-Possibility"));
+            this.moneyLoss = !headers.containsKey("X-MoneyLoss") ? NotExisting : Double.parseDouble(headers.getFirst("X-MoneyLoss"));
+            this.timeLoss = !headers.containsKey("X-TimeLoss") ? NotExisting : Double.parseDouble(headers.getFirst("X-TimeLoss")); //TODO: timeLoss in small case
+            this.status = !headers.containsKey("X-Status") ? null : headers.getFirst("X-Status");
         }
 
         public void findAndApplyDiff(Risk oldRisk) {
@@ -128,9 +128,9 @@ public class RiskHandler implements HttpHandler {
                 possibility = oldRisk.possibility;
             if (moneyLoss == NotExisting)
                 moneyLoss = oldRisk.moneyLoss;
-            if (lastUpdateDate == null)
+            if (lastUpdateDate.equals(new Date(1)))
                 lastUpdateDate = oldRisk.lastUpdateDate;
-            if (creationDate == null)
+            if (creationDate.equals(new Date(1)))
                 creationDate = oldRisk.creationDate;
             if (status == null || status.isEmpty())
                 status = oldRisk.status;

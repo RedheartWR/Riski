@@ -22,7 +22,7 @@ public class UserQueries {
     public static String getUser(String email) {
         try {
             ResultSet result = Query.executeQuery("select * from users where email ='" + email + "'");
-//            result.next(); // TODO: check if necessary
+            result.next();
             User user = new User(result);
             result.close();
             return ConverterJSON.toJSON(user);
@@ -75,7 +75,6 @@ public class UserQueries {
     public static boolean isTokenValid(String token) {
         try {
             ResultSet result = Query.executeQuery("select * from users where token ='" + token + "'");
-            // TODO: check query
             if (!result.next())
                 return false;
             result.close();
@@ -94,10 +93,10 @@ public class UserQueries {
         }
     }
 
-    public static String changePassword(String email, String oldPassword, String newPassword) {
+    public static String changePassword(String email, String oldPassword, String newPassword, String token) {
         try {
-            Query.executeUpdate("update users set password = '%s' where email = '%s' and password = '%s'",
-                    newPassword, email, oldPassword);
+            Query.executeUpdate("update users set password = '%s' where email = '%s' and password = '%s' and token = '%s'",
+                    newPassword, email, oldPassword, token);
             return "DONE";
         } catch (Exception e) {
             return "Error: " + e.getMessage();

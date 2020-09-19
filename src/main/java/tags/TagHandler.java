@@ -52,7 +52,7 @@ public class TagHandler implements HttpHandler {
             if (response.contains("Error"))
                 throw new Exception(response);
 
-            t.sendResponseHeaders(200, response.length());
+            t.sendResponseHeaders(200, response.getBytes().length);
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
             os.close();

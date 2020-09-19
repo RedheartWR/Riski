@@ -24,7 +24,7 @@ public class UserHandler implements HttpHandler {
         String userName = headers.getFirst("X-Name");
         String isAHead = headers.getFirst("IsAHead") != null && headers.getFirst("IsAHead").equals("Y") ? "TRUE" : "FALSE";
 
-        String token = headers.getFirst("Token");
+        String token = headers.getFirst("X-Token");
         String method = t.getRequestMethod();
         try {
             if (!t.getRequestURI().toString().equals(AUTHORIZATION) && !t.getRequestURI().toString().equals(TOKEN) && !UserQueries.isTokenValid(token))
@@ -37,7 +37,7 @@ public class UserHandler implements HttpHandler {
                             response = UserQueries.getUser(userEmail);
                             break;
                         case HttpMethods.POST:
-                            response = UserQueries.changePassword(userEmail, userPassword, newPassword);
+                            response = UserQueries.changePassword(userEmail, userPassword, newPassword, token);
                             break;
                         case HttpMethods.PUT:
                             response = UserQueries.createUser(userEmail, userName, userPassword, isAHead);
@@ -58,6 +58,7 @@ public class UserHandler implements HttpHandler {
                 case TOKEN:
                     if (!UserQueries.isTokenValid(token))
                         throw new Exception("Unauthorized");
+                    break;
                 default:
                     throw new NoSuchMethodException();
             }
@@ -65,7 +66,7 @@ public class UserHandler implements HttpHandler {
             if (response.contains("Error"))
                 throw new Exception(response);
 
-            t.sendResponseHeaders(200, response.length());
+            t.sendResponseHeaders(200, response.getBytes().length);
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
             os.close();
