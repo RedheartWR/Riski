@@ -29,17 +29,15 @@ public class Risk implements Serializable {
             this.id = result.getInt("id");
             this.name = result.getString("name");
             this.description = result.getString("description");
-            this.assigneeEmail = result.getString("assigneeEmail");
-            this.creatorEmail = result.getString("creatorEmail");
-            this.creationDate = result.getDate("creationDate");
-            this.lastUpdateDate = result.getDate("lastUpdateDate");
+            this.assigneeEmail = result.getString("assignee_email");
+            this.creatorEmail = result.getString("creator_email");
+            this.creationDate = result.getDate("creation_date");
+            this.lastUpdateDate = result.getDate("last_update_date");
             this.possibility = result.getDouble("possibility");
-            this.moneyLoss = result.getDouble("moneyLoss");
-            this.timeLoss = result.getDouble("timeLoss");
+            this.moneyLoss = result.getDouble("money_loss");
+            this.timeLoss = result.getDouble("time_loss");
             this.status = result.getString("status");
-        } catch (SQLException ex) {
-            // TODO: handle
-        }
+        } catch (SQLException ex) { }
     }
 
     public static LinkedList<Risk> fromResultSet(ResultSet result) {
@@ -50,7 +48,7 @@ public class Risk implements Serializable {
                 risks.addLast(risk);
             }
         } catch (SQLException ex) {
-            // TODO: handle
+            return risks;
         }
         return risks;
     }

@@ -35,7 +35,7 @@ public class User implements Serializable {
                 users.addLast(user);
             }
         } catch (SQLException ex) {
-            // TODO: handle
+            return users;
         }
         return users;
     }

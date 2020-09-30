@@ -8,18 +8,18 @@ import java.util.LinkedList;
 import java.util.UUID;
 
 public class UserQueries {
-    public static String getUsers() {
+    public static String getUsers() throws Exception {
         try {
             ResultSet result = Query.executeQuery("select * from users");
             LinkedList<User> users = User.fromResultSet(result);
             result.close();
             return ConverterJSON.toJSON(users);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            throw new Exception(e.getMessage());
         }
     }
 
-    public static String getUser(String email) {
+    public static String getUser(String email) throws Exception {
         try {
             ResultSet result = Query.executeQuery("select * from users where email ='" + email + "'");
             result.next();
@@ -27,11 +27,11 @@ public class UserQueries {
             result.close();
             return ConverterJSON.toJSON(user);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            throw new Exception(e.getMessage());
         }
     }
 
-    private static boolean isUserExists(String email, String password) {
+    private static boolean isUserExists(String email, String password) throws Exception {
         try {
             ResultSet result= Query.executeQuery("select * from users where email ='" + email + "' and password = '" + password + "'");
             // TODO: check query
@@ -44,27 +44,27 @@ public class UserQueries {
         }
     }
 
-    public static String createUser(String email, String name, String password, String isAHead) {
+    public static String createUser(String email, String name, String password, String isAHead)
+            throws Exception {
         try {
             Query.executeUpdate("insert into users (email, name, password, is_a_head) values('%s', '%s', '%s', '%s')",
                     email, name, password, isAHead);
             return "DONE";
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            throw new Exception(e.getMessage());
         }
     }
 
-    public static String authorization(String email, String password) {
+    public static String authorization(String email, String password) throws Exception {
         try {
             String token = UUID.randomUUID().toString();
-            // Check if user exists in users table: if exists create token (some symbol set) and save it as parameter in users table, send this token back to frontend
             if (isUserExists(email, password)) {
                 Query.executeUpdate("update users set token = '%s' where email = '%s'", token, email);
                 return token;
             } else
                 throw new IllegalArgumentException("Not authorized");
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            throw new Exception(e.getMessage());
         }
     }
 
@@ -81,22 +81,23 @@ public class UserQueries {
         }
     }
 
-    public static String deleteUser(String email) {
+    public static String deleteUser(String email) throws Exception {
         try {
             Query.executeUpdate("delete from users where email = '%s'", email);
             return "DONE";
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            throw new Exception(e.getMessage());
         }
     }
 
-    public static String changePassword(String email, String oldPassword, String newPassword, String token) {
+    public static String changePassword(String email, String oldPassword, String newPassword, String token)
+            throws Exception {
         try {
             Query.executeUpdate("update users set password = '%s' where email = '%s' and password = '%s' and token = '%s'",
                     newPassword, email, oldPassword, token);
             return "DONE";
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            throw new Exception(e.getMessage());
         }
     }
 }

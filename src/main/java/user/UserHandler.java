@@ -52,7 +52,6 @@ public class UserHandler implements HttpHandler {
                     break;
                 case AUTHORIZATION:
                     response = UserQueries.authorization(userEmail, userPassword);
-//                    if (!response.isEmpty() && !response.contains("Error"))
                     t.getResponseHeaders().set("Authorization", response);
                     break;
                 case TOKEN:
@@ -62,9 +61,6 @@ public class UserHandler implements HttpHandler {
                 default:
                     throw new NoSuchMethodException();
             }
-
-            if (response.contains("Error"))
-                throw new Exception(response);
 
             t.sendResponseHeaders(200, response.getBytes().length);
             OutputStream os = t.getResponseBody();

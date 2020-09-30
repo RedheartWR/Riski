@@ -45,9 +45,6 @@ public class RiskHandler implements HttpHandler {
                     throw new NoSuchMethodException();
             }
 
-            if (response.contains("Error"))
-                throw new Exception(response);
-
             t.sendResponseHeaders(200, response.getBytes().length);
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
@@ -58,11 +55,11 @@ public class RiskHandler implements HttpHandler {
 
     }
 
-    private String risksHandler() {
+    private String risksHandler() throws Exception {
         return RiskQueries.getRisks();
     }
 
-    private String risksByUserHandler(Headers headers) {
+    private String risksByUserHandler(Headers headers) throws Exception {
         String assigneeEmail = headers.getFirst("X-Email");
         return RiskQueries.getRiskByUser(assigneeEmail);
     }

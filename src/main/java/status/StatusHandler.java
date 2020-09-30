@@ -23,10 +23,6 @@ public class StatusHandler implements HttpHandler {
             else
                 throw new NoSuchMethodException();
 
-
-            if (response.contains("Error"))
-                throw new Exception(response);
-
             t.sendResponseHeaders(200, response.getBytes().length);
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
