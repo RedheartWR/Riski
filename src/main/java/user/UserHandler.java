@@ -26,6 +26,17 @@ public class UserHandler implements HttpHandler {
 
         String token = headers.getFirst("X-Token");
         String method = t.getRequestMethod();
+
+        t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+        t.getResponseHeaders().add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Email, X-Token, X-Name, IsAHead, Password, NewPassword");
+        t.getResponseHeaders().add("Access-Control-Allow-Credentials", "true");
+        t.getResponseHeaders().add("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS,HEAD");
+
+        if (method.equals("OPTIONS")){
+            t.sendResponseHeaders(200, 0);
+            return;
+        }
+
         try {
             if (!t.getRequestURI().toString().equals(AUTHORIZATION) && !t.getRequestURI().toString().equals(TOKEN) && !UserQueries.isTokenValid(token))
                 throw new Exception("Unauthorized");
