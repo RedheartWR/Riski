@@ -109,7 +109,7 @@ public class RiskHandler implements HttpHandler {
     }
 
     private class RiskLocal {
-        DateFormat format = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
+        DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
         private static final double NotExisting = Double.NEGATIVE_INFINITY;
 
         int id;
