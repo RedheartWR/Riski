@@ -134,7 +134,7 @@ public class RiskHandler implements HttpHandler {
             this.lastUpdateDate = !headers.containsKey("X-LastUpdateDate") ? new Date(1) : format.parse(headers.getFirst("X-LastUpdateDate"));
             this.possibility = !headers.containsKey("X-Possibility") ? NotExisting : Double.parseDouble(headers.getFirst("X-Possibility"));
             this.moneyLoss = !headers.containsKey("X-MoneyLoss") ? NotExisting : Double.parseDouble(headers.getFirst("X-MoneyLoss"));
-            this.timeLoss = !headers.containsKey("X-TimeLoss") ? NotExisting : Double.parseDouble(headers.getFirst("X-TimeLoss")); //TODO: timeLoss in small case
+            this.timeLoss = !headers.containsKey("X-TimeLoss") ? NotExisting : Double.parseDouble(headers.getFirst("X-TimeLoss"));
             this.status = !headers.containsKey("X-Status") ? null : headers.getFirst("X-Status");
         }
 

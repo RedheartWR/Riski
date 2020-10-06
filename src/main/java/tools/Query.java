@@ -21,7 +21,7 @@ public class Query {
         Statement statement = connection.createStatement();
         String sql = String.format(formatQuery, args);
         ResultSet result = statement.executeQuery(sql);
-//        statement.close(); // TODO: think how to close the statement
+        statement.close();
         return result;
     }
 

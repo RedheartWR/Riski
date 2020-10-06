@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.util.LinkedList;
 
 public class StatusQueries {
-    public static String getUsers() throws Exception {
+    public static String getStatuses() throws Exception {
         try {
             ResultSet result = Query.executeQuery("select * from statuses");
             LinkedList<Status> statuses = Status.fromResultSet(result);

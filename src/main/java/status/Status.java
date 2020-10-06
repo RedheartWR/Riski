@@ -21,7 +21,7 @@ public class Status implements Serializable {
                 statuses.addLast(status);
             }
         } catch (SQLException ex) {
-            // TODO: handle
+            return new LinkedList<>();
         }
         return statuses;
     }

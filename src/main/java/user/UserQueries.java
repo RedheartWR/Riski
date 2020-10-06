@@ -34,7 +34,6 @@ public class UserQueries {
     private static boolean isUserExists(String email, String password) throws Exception {
         try {
             ResultSet result= Query.executeQuery("select * from users where email ='" + email + "' and password = '" + password + "'");
-            // TODO: check query
             if (!result.next() || result.getRow() != 1)
                 return false;
             result.close();

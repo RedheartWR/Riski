@@ -19,7 +19,7 @@ public class StatusHandler implements HttpHandler {
                 throw new Exception("Unauthorized");
 
             if (t.getRequestURI().toString().equals(STATUSES))
-                response = StatusQueries.getUsers();
+                response = StatusQueries.getStatuses();
             else
                 throw new NoSuchMethodException();
 

@@ -22,9 +22,7 @@ public class User implements Serializable {
             name = result.getString("name");
             password = result.getString("password");
             isAHead = result.getBoolean("isAHead");
-        } catch (SQLException ex) {
-            // TODO: handle
-        }
+        } catch (SQLException ex) { }
     }
 
     public static LinkedList<User> fromResultSet(ResultSet result) {

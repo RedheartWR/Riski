@@ -21,7 +21,7 @@ public class Tag implements Serializable {
                 tags.addLast(name);
             }
         } catch (SQLException ex) {
-            // TODO: handle
+            return new LinkedList<>();
         }
         return tags;
     }
@@ -34,7 +34,7 @@ public class Tag implements Serializable {
                 risks.addLast(riskId);
             }
         } catch (SQLException ex) {
-            // TODO: handle
+            return new LinkedList<>();
         }
         return risks;
     }
