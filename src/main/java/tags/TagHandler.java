@@ -1,13 +1,18 @@
 package tags;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import tools.HttpMethods;
 import user.UserQueries;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.List;
 
 public class TagHandler implements HttpHandler {
 
@@ -44,6 +49,9 @@ public class TagHandler implements HttpHandler {
                         case HttpMethods.PUT:
                             response = TagQueries.createTag(tagName, riskId);
                             break;
+                        case HttpMethods.POST:
+                            changeTags(t, riskId);
+                            break;
                         case HttpMethods.DELETE:
                             response = TagQueries.deleteTag(tagName, riskId);
                             break;
@@ -66,5 +74,28 @@ public class TagHandler implements HttpHandler {
         } catch (Exception ex) {
             t.sendResponseHeaders(500, 0);
         }
+    }
+
+    private void changeTags(HttpExchange t, String riskId) throws Exception {
+        InputStreamReader isr =  new InputStreamReader(t.getRequestBody(),"utf-8");
+        BufferedReader br = new BufferedReader(isr);
+
+        int b;
+        StringBuilder buf = new StringBuilder();
+        while ((b = br.read()) != -1) {
+            buf.append((char) b);
+        }
+
+        List<String> tags = new Gson().fromJson(buf.toString(),
+                new TypeToken<List<String>>() {}.getType());
+
+        TagQueries.deleteTags(riskId);
+
+        for (String tag : tags) {
+            TagQueries.createTag(tag, riskId);
+        }
+
+        br.close();
+        isr.close();
     }
 }

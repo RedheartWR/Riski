@@ -48,4 +48,13 @@ public class TagQueries {
             throw new Exception(e.getMessage());
         }
     }
+
+    public static String deleteTags(String riskId) throws Exception {
+        try {
+            Query.executeUpdate("delete from tags where risk_id = '%s'", riskId);
+            return "DONE";
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
 }
