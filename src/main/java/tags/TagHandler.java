@@ -30,7 +30,7 @@ public class TagHandler implements HttpHandler {
         String method = t.getRequestMethod();
 
         t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
-        t.getResponseHeaders().add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, X-TagName, X-Token");
+        t.getResponseHeaders().add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, X-TagName, X-Token, X-RiskId");
         t.getResponseHeaders().add("Access-Control-Allow-Credentials", "true");
         t.getResponseHeaders().add("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS,HEAD");
 
